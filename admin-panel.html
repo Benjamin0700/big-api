@@ -21,16 +21,16 @@
             background: #fff;
             padding: 2.5rem;
             border-radius: 10px;
-            max-width: 650px;
+            max-inline-size: 650px;
             margin: 0 auto 2rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         form input,
         form select {
-            width: 100%;
+            inline-size: 100%;
             padding: 0.75rem;
-            margin-bottom: 1rem;
+            margin-block-end: 1rem;
             border: 1px solid #ccc;
             border-radius: 6px;
         }
@@ -58,11 +58,11 @@
         }
 
         .car-card img {
-            width: 100%;
-            height: 180px;
+            inline-size: 100%;
+            block-size: 180px;
             object-fit: cover;
             border-radius: 6px;
-            margin-bottom: 1rem;
+            margin-block-end: 1rem;
         }
 
         .car-card h3 {
@@ -170,7 +170,7 @@
         };
 
         function fetchCars() {
-            fetch('http://localhost:5000/api/cars')
+            fetch('https://big-api-ft07.onrender.com/api/cars')
                 .then(res => res.json())
                 .then(data => {
                     carList.innerHTML = "";
@@ -267,8 +267,8 @@
                 },
                 dimensions: {
                     length: parseFloat(formData.get("length")),
-                    width: parseFloat(formData.get("width")),
-                    height: parseFloat(formData.get("height")),
+                    inlinesize: parseFloat(formData.get("width")),
+                    blocksize: parseFloat(formData.get("height")),
                     grossWeight: parseFloat(formData.get("grossWeight")),
                     maxLoad: parseFloat(formData.get("maxLoad")),
                     seats: parseInt(formData.get("seats"))
@@ -283,7 +283,7 @@
                 }
             };
 
-            fetch('http://localhost:5000/api/cars', {
+            fetch('https://big-api-ft07.onrender.com/api/cars', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(car)

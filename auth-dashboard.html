@@ -421,7 +421,7 @@
     const usersList = document.getElementById('users-list');
 
     // API базовый URL
-    const API_BASE_URL = 'http://localhost:5000';
+    const API_BASE_URL = 'https://big-api-ft07.onrender.com';
 
     signinTab.onclick = () => {
       loginBox.classList.remove('hidden');
@@ -455,6 +455,7 @@
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value.trim();
+      const user = JSON.parse(localStorage.getItem('user'));
 
       // For demo purposes
       if (email === 'demo' && password === 'demo') {
@@ -487,7 +488,7 @@
       e.preventDefault();
       const email = document.getElementById('register-email').value.trim();
       const password = document.getElementById('register-password').value.trim();
-
+      localStorage.setItem('user', JSON.stringify({ email, password }));
       try {
         const res = await fetch(`${API_BASE_URL}/api/register`, {
           method: 'POST',
