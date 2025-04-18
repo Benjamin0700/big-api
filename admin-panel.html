@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 10px;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        form button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .car-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .car-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .car-card h3 {
+            margin: 0.25rem 0;
+        }
+
+        .car-card p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0.2rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Admin Panel - Add Car</h1>
+
+    <form id="carForm">
+        <input type="text" name="title" placeholder="Car Title" required />
+
+        <select name="body" required>
+            <option value="" disabled selected>Select Body Type</option>
+            <option value="Sedan">Sedan</option>
+            <option value="SUV">SUV</option>
+            <option value="Coupe">Coupe</option>
+            <option value="Hatchback">Hatchback</option>
+        </select>
+
+        <select name="condition" required>
+            <option value="" disabled selected>Select Condition</option>
+            <option value="New">New</option>
+            <option value="Used">Used</option>
+        </select>
+
+        <input type="number" name="mileage" placeholder="Mileage" required />
+        <select name="fuelType" required>
+            <option value="" disabled selected>Select Fuel Type</option>
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
+        </select>
+
+        <input type="number" name="engineSize" placeholder="Engine Size (e.g. 4.0)" required />
+        <input type="text" name="door" placeholder="Doors (e.g. 4 Doors)" required />
+        <input type="number" name="cylinder" placeholder="Cylinder" required />
+        <input type="text" name="color" placeholder="Color" required />
+        <input type="text" name="year" placeholder="Year" required />
+
+        <select name="transmission" required>
+            <option value="" disabled selected>Select Transmission</option>
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
+        </select>
+
+        <select name="driveType" required>
+            <option value="" disabled selected>Select Drive Type</option>
+            <option value="Front-Wheel Drive">Front-Wheel Drive</option>
+            <option value="Rear-Wheel Drive">Rear-Wheel Drive</option>
+            <option value="All-Wheel Drive">All-Wheel Drive</option>
+        </select>
+
+        <input type="text" name="vin" placeholder="VIN" required />
+        <input type="url" name="image1" placeholder="Image URL 1" required />
+        <input type="url" name="image2" placeholder="Image URL 2" required />
+        <input type="url" name="image3" placeholder="Image URL 3" required />
+        <input type="url" name="image4" placeholder="Image URL 4" required />
+        <textarea name="description" placeholder="Description" required></textarea>
+
+        <label><strong>Interior Features:</strong></label><br />
+        <label><input type="checkbox" name="interior" value="Air Conditioner" /> Air Conditioner</label><br />
+        <label><input type="checkbox" name="interior" value="Leather Seats" /> Leather Seats</label><br />
+        <label><input type="checkbox" name="interior" value="Tachometer" /> Tachometer</label><br /><br />
+
+        <label><strong>Comfort Features:</strong></label><br />
+        <label><input type="checkbox" name="comfort" value="Android Auto" /> Android Auto</label><br />
+        <label><input type="checkbox" name="comfort" value="Bluetooth" /> Bluetooth</label><br />
+        <label><input type="checkbox" name="comfort" value="Power Steering" /> Power Steering</label><br /><br />
+
+        <input type="number" name="length" placeholder="Length (mm)" />
+        <input type="number" name="width" placeholder="Width (mm)" />
+        <input type="number" name="height" placeholder="Height (mm)" />
+        <input type="number" name="grossWeight" placeholder="Gross Weight (kg)" />
+        <input type="number" name="maxLoad" placeholder="Max Load (kg)" />
+        <input type="number" name="seats" placeholder="Seats" />
+        <input type="number" name="fuelTankCapacity" placeholder="Fuel Tank Capacity (litres)" />
+        <input type="text" name="address" placeholder="Address" />
+        <input type="number" name="latitude" step="any" placeholder="Latitude" />
+        <input type="number" name="longitude" step="any" placeholder="Longitude" />
+
+        <button type="submit">Add Car</button>
+    </form>
+
+    <h1>All Cars</h1>
+    <div class="car-list" id="carList"></div>
+
+    <script>
+        const carForm = document.getElementById('carForm');
+        const carList = document.getElementById('carList');
+
+        // Fetch cars on load
+        window.onload = () => {
+            fetchCars();
+            restoreFormData();
+        };
+
+        function fetchCars() {
+            fetch('http://localhost:5000/api/cars')
+                .then(res => res.json())
+                .then(data => {
+                    carList.innerHTML = "";
+                    data.forEach(car => {
+                        const div = document.createElement('div');
+                        div.className = "car-card";
+                        div.innerHTML = `
+              <img src="${car.images[0]}" alt="${car.title}" />
+              <h3>${car.title}</h3>
+              <p><strong>${car.body}</strong> - ${car.condition}</p>
+              <p>Mileage: ${car.mileage}</p>
+              <p>Fuel: ${car.fuelType}</p>
+              <p>Year: ${car.year}</p>
+              <p>Transmission: ${car.transmission}</p>
+              <p>Drive: ${car.driveType}</p>
+              <p>VIN: ${car.vin}</p>
+            `;
+                        carList.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching cars:', err);
+                });
+        }
+
+        // Get checked values
+        function getCheckedValues(name) {
+            return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+        }
+
+        // Save form data to localStorage on input
+        carForm.addEventListener("input", () => {
+            const formData = new FormData(carForm);
+            const formValues = {};
+            for (let [key, value] of formData.entries()) {
+                formValues[key] = value;
+            }
+            formValues["interior"] = getCheckedValues("interior");
+            formValues["comfort"] = getCheckedValues("comfort");
+            localStorage.setItem("carFormData", JSON.stringify(formValues));
+        });
+
+        // Restore form data from localStorage
+        function restoreFormData() {
+            const savedData = localStorage.getItem("carFormData");
+            if (savedData) {
+                const formValues = JSON.parse(savedData);
+                for (let key in formValues) {
+                    const field = carForm.elements[key];
+                    if (!field) continue;
+
+                    if (Array.isArray(formValues[key])) {
+                        formValues[key].forEach(val => {
+                            const checkbox = carForm.querySelector(`input[name="${key}"][value="${val}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                    } else {
+                        field.value = formValues[key];
+                    }
+                }
+            }
+        }
+
+        // Handle submit
+        carForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(carForm);
+
+            const car = {
+                title: formData.get("title"),
+                body: formData.get("body"),
+                condition: formData.get("condition"),
+                mileage: parseInt(formData.get("mileage")),
+                fuelType: formData.get("fuelType"),
+                engineSize: parseFloat(formData.get("engineSize")),
+                door: formData.get("door"),
+                cylinder: parseInt(formData.get("cylinder")),
+                color: formData.get("color"),
+                year: parseInt(formData.get("year")),
+                transmission: formData.get("transmission"),
+                driveType: formData.get("driveType"),
+                vin: formData.get("vin"),
+                description: formData.get("description"),
+                images: [
+                    formData.get("image1"),
+                    formData.get("image2"),
+                    formData.get("image3"),
+                    formData.get("image4")
+                ],
+                features: {
+                    interior: getCheckedValues("interior"),
+                    comfort: getCheckedValues("comfort")
+                },
+                dimensions: {
+                    length: parseFloat(formData.get("length")),
+                    width: parseFloat(formData.get("width")),
+                    height: parseFloat(formData.get("height")),
+                    grossWeight: parseFloat(formData.get("grossWeight")),
+                    maxLoad: parseFloat(formData.get("maxLoad")),
+                    seats: parseInt(formData.get("seats"))
+                },
+                engineAndTransmission: {
+                    fuelTankCapacity: parseFloat(formData.get("fuelTankCapacity"))
+                },
+                location: {
+                    address: formData.get("address"),
+                    latitude: parseFloat(formData.get("latitude")),
+                    longitude: parseFloat(formData.get("longitude"))
+                }
+            };
+
+            fetch('http://localhost:5000/api/cars', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(car)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert("Car added successfully!");
+                    localStorage.removeItem("carFormData"); // ⚠️ Resetdan oldin!
+                    carForm.reset();
+                    fetchCars();
+                })
+                .catch(err => {
+                    alert("Failed to add car.");
+                    console.error(err);
+                });
+        });
+    </script>
+</body>
+
+</html>
