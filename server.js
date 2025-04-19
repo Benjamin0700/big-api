@@ -6,6 +6,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import carRoutes from './routes/carRoutes.js';
+import uploadRoute from "./routes/uploadRoute.js";
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use("/api/upload", uploadRoute);
+app.use("/uploads", express.static("uploads"));
 
 // --- MongoDB connect ---
 mongoose.connect(process.env.MONGO_URI, {

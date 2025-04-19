@@ -126,10 +126,21 @@
         </select>
 
         <input type="text" name="vin" placeholder="VIN" required />
+        <input type="number" name="cost" placeholder="Cost (e.g. 1200$)" required />
         <input type="url" name="image1" placeholder="Image URL 1" required />
         <input type="url" name="image2" placeholder="Image URL 2" required />
         <input type="url" name="image3" placeholder="Image URL 3" required />
         <input type="url" name="image4" placeholder="Image URL 4" required />
+
+        <label>Upload Image 1:</label>
+        <input type="file" name="uploadImage1" accept="image/*" /><br />
+        <label>Upload Image 2:</label>
+        <input type="file" name="uploadImage2" accept="image/*" /><br />
+        <label>Upload Image 3:</label>
+        <input type="file" name="uploadImage3" accept="image/*" /><br />
+        <label>Upload Image 4:</label>
+        <input type="file" name="uploadImage4" accept="image/*" /><br /><br />
+
         <textarea name="description" placeholder="Description" required></textarea>
 
         <label><strong>Interior Features:</strong></label><br />
@@ -194,6 +205,19 @@
                 .catch(err => {
                     console.error('Error fetching cars:', err);
                 });
+        }
+
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const response = await fetch("http://localhost:3000/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            return result.data.url; // bu URL'ni img src sifatida ishlating
         }
 
         // Get checked values
